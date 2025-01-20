@@ -10,7 +10,7 @@ Spring (Apr-June) and Fall (Sept-early Nov), 2022-2023.
 **ExptCommunityData (.csv)**
 Provides community data from the manipulative experiment. Data were collected in approx. 2 week intervals. Rows correlate to individual observations of each plot. Columns provide plot identifying information and community data. 
 
-**ExptData_Metadat (.csv)** 
+**ExptData_Metadata (.csv)** 
 Provides the metadata for all columns in the ExptCommunityData file. 
 
 **SurveyCommunityData (.csv)**
