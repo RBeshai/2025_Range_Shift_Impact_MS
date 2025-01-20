@@ -1,17 +1,20 @@
 # Applying invasion biology frameworks to predict impacts of range-expanding predators 
 This README file was generated on 2024-01-20 
 
+
 ## Data Collection Period
 Spring (Apr-June) and Fall (Sept-early Nov), 2022-2023.
 
+
 ## Files and Description
+
 
 ### Data and Metadata Files 
 **ExptCommunityData (.csv)**
 Provides community data from the manipulative experiment. Data were collected in approx. 2 week intervals. Rows correlate to individual observations of each plot. Columns provide plot identifying information and community data. 
 
 **ExptData_Metadata (.csv)** 
-Provides the metadata for all columns in the ExptCommunityData file. 
+Provides the metadata for all columns in the ExptCommunityData file, including all abbreviaions and codes. 
 
 **SurveyCommunityData (.csv)**
 Contains all observational community survey data. Rows correspond to individual quadrats, and columns provide quadrat identifying data and community information. 
@@ -23,7 +26,8 @@ Contains information about each vertical transect from the observational data. R
 Contains information about the size of all whelk individuals captured in the observational data. Rows correspond to individual whelks. 
 
 **SurveyData_Metadata (.csv)**
-Provides the metadata for all observational survey ("Survey") sheets.
+Provides the metadata for all observational survey ("Survey") sheets, including all abbreviaions and codes. 
+
 
 ### Script Files
 **Cage_Predation_Cleaned.R**
@@ -34,6 +38,7 @@ This script can be used to generate the statistical analysis of all changes in d
 
 **Survey_Analysis_Cleaned.R**
 This script can be used to generate the statistical analysis of all data and figures generated from the observational study.   Figures are named according to their placement in the manuscript. 
+
 
 ## Recommended Workflow
 Download all datafiles, R scripts, and the R project. In addition to statistical analysis and figure creation, data cleaning and manipulation is performed within each script. 
