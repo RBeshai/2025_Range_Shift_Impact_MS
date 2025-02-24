@@ -149,7 +149,7 @@ WhelkDensity_Df <- WhelkDensity_Df %>%
   # Pull in the data
   mutate(As_Density = (As_Count*16), 
          M_Density = (Mex_Count*16))
-  # Quads are 1/16 of a meter, so multiply by 16 to get per m2
+  # Quads are 1/16 of a square meter, so multiply by 16 to get per m2
 
 # Then pivot longer
 WhelkDensity_Df <- WhelkDensity_Df %>%

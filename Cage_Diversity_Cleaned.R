@@ -71,7 +71,7 @@ Avg_Whelks_All <- CageData %>%
   group_by(Site, Target_Species, Plot_ID) %>% 
   # Group by species and plot
   summarise(Avg_No_Whelks = round.off(mean(No_Target_Whelks_In_Plot)))
-# Calculate the average number of whelks we observed in the plot
+  # Calculate the average number of whelks we observed in the plot
 
 # Join this to the main dataset
 CageData <- left_join(CageData, Avg_Whelks_All, by = c("Site", "Target_Species", "Plot_ID"))
@@ -178,7 +178,7 @@ DiversityAs <- filter(DiversityData, Target_Species == "As") %>%
 # site level model will be followed by a global model  
 
 # This script will focus on the linear impacts. To assess non-linear impacts
-# replace "RunAvg_Whelks" with "poly(RunAvg_Whelks, 2)" 
+# replace "RunAvg_Whelks" with "poly(RunAvg_Whelks, 2)" in each lm() function
 
 ###########################################
 # Acanthinucella 
@@ -276,6 +276,7 @@ summary(Global_AsRich_lm)
 Global_AsRich_lm <- lmer(formula = Change_Richness_As ~ RunAvg_Whelks + (1|Site/Region), data = filter(DiversityAs, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
   # Throws a convergence error, but inspection of the output suggests that this is a false error
   # lmerTest has a lower threshhold for reporting convergence than lme4
+  # Convergence error ignored because the summary output is nearly identical when using different optimizers
 
 # Check model assumptions
 check_model(Global_AsRich_lm)
