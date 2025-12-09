@@ -5,8 +5,10 @@
 
 library(tidyverse)    #loads tidyr, readr, and dplyr
 library(vegan)        #community analysis functions
-library(lme4)         #for running linear mixed model statistics
+#library(lme4)         #for running linear mixed model statistics
+library(glmmTMB)      #for running linear mixed model statistics
 library(lmerTest)     #for determining the statistical significance
+#library(pscl)         #for running hurdle models
 library(performance)  #can use to check model assumptions with check_model()
 library(viridis)      #for colorblind-friendly plots
 library(ggpubr)       #for visualizing qq plots, enabling ggarrange
@@ -197,11 +199,18 @@ WhelkDensity_Df <- left_join(WhelkDensity_Df, Avg_Lat, by = c("Region", "Site"))
 # Define and run LMMs assessing whelk density ----------------------------------
 
 # Build model to test how Acanthinucella's density varies with latitude
-As_Density_Lat_Mod <- lmer(Density ~ Avg_Lat + Quad_TH_m + As_Status + (1|Vert_Transect_Dist_m), 
+As_Density_Lat_Mod <- lmer(As_Count ~ Avg_Lat + Quad_TH_m + As_Status + (1|Vert_Transect_Dist_m), 
                            data = filter(WhelkDensity_Df, Species == "As" & As_Status != "NA"))
   # Site not included as random effect because it is singular with Avg_Lat
   # NA sites are not included because I don't want to try to predict whelk counts at sites where we 
   # never found whelks 
+
+test <- glmmTMB(As_Count ~ Avg_Lat + Quad_TH_m + As_Status,
+                ziformula = ~Vert_Transect_Dist_m,
+                family = nbinom2, 
+                data = dplyr::filter(WhelkDensity_Df, Species == "As" & As_Status != "NA"))
+
+summary(test)
 
 # Check model assumptions 
 check_model(As_Density_Lat_Mod)

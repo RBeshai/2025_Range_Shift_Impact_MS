@@ -8,22 +8,22 @@ SurveyCommunityData,Season,Season in which the survey was conducted,"Spring (Baj
 SurveyCommunityData,Surveyor,Person estimating percent coverage of species within the quadrat,Varies
 SurveyCommunityData,Recorder,Person recording species estimates for surveyor,Varies
 SurveyCommunityData,Survey_From,Used to track whether diversity surveys were conducted in-field (the majority) or from a photo (the minority),"Field, Photo. ""Field"" indicates that the survey was conducted on site. ""Photo"" indicates that all diversity surveys were completed from photos of the qudrats."
-SurveyCommunityData,Vert_Transect_Dist_m,Distance along the horizontal transect that the vertical transect was placed,"0-25 meters, whole integers"
-SurveyCommunityData,Quad_Dist_m,Distance along the veritcal transect that the quadrat was placed for commiunity diversity surveys,Varies 
+SurveyCommunityData,Vert_Transect_Dist_m,Distance (in meters) along the horizontal transect that the vertical transect was placed,"0-25, whole integers"
+SurveyCommunityData,Quad_Dist_m,Distance (in meters) along the veritcal transect that the quadrat was placed for community diversity surveys,Varies 
 SurveyCommunityData,TH_Transect_Top_m,Tide height (in meters above mean lower low water) at the top of a given vertical transect. Determined using either a laser level or sight level. ,Varies 
 SurveyCommunityData,Quad_TH_m,Tide height of the quadrat surveyed (in meters above mean lower low water). Calculated in 0.25 m steps down from the top of the vertical transect.,Varies
 SurveyCommunityData,Pct_Pool,Percentage of the quarat that falls within a tidepool.,0-100
-SurveyCommunityData,Species Abundances (Columns O-DY),"Column headers indicate species that may have been observed in quadrat. Values in below boxes indicate % area covered by each specie, typically in whole integer values. At very low abundances (<1%), estimates occur in intervals of tenths (i.e., 0.5). The total coverage of a qudrat may exceed 100% due to layering. ",0-100
+SurveyCommunityData,Species Abundances (Columns O-DY),"Column headers indicate species that may have been observed in quadrat. Values in below boxes indicate % area covered by each species, typically in whole integer values. At very low abundances (<1%), estimates occur in intervals of tenths (i.e., 0.5). The total coverage of a qudrat may exceed 100% due to layering. ",0-100
 SurveyCommunityData,Notes,Space for extra notes to be written ,Varies 
 SurveyWhelkLengthData,Entered_By,Initials of person entering data,Varies
 SurveyWhelkLengthData,QAQC_By,Initials of person doing the entry quality check,Varies
 SurveyWhelkLengthData,Region,The overall geographical region in which a specific site exists,"NorCal, SoCal, Baja"
 SurveyWhelkLengthData,Site,Name of the sites surveyed,"Little Corona, Crystal Cove (Reef Point), Shaw's Cove, Heisler Park, Swami's Beach, Victoria Beach, Cardiff Beach, Cabrillo National Monument, Dana Point, Treasure Island, Scripps, Saldamando, San Miguel, Punta Morro, Campo Kennedy, La Chorrera, La Chorerra Norte, Mendocino North, Mendocino South, Mussel Rock, Sea Ranch, Moat Creek, Dillon Beach, Rancho Marino"
 SurveyWhelkLengthData,Survey_Date,Date on which the measurements were collected,Varies (but will be identical to the community survey dates)
-SurveyWhelkLengthData,Vert_Transect_Dist,Distance along the horizontal transect that the vertical transect was placed,Varies
-SurveyWhelkLengthData,Quad_Dist_m,Distance along the vertical transect that the quadrat was placed,Varies
+SurveyWhelkLengthData,Vert_Transect_Dist_m,Distance (in meters) along the horizontal transect that the vertical transect was placed,"0-25 meters, whole integers"
+SurveyWhelkLengthData,Quad_Dist_m,Distance (in meters) along the veritcal transect that the quadrat was placed for community diversity surveys,Varies
 SurveyWhelkLengthData,Species,Whelk species being measured,"M = Mexacanthina lugubris, As = Acanthinucella spirata, Ap = Acanthinucella punctulata, Ne = Nucella emarginata/ostrina (not distinguished here),  Ol = Ocenebra lurida, Nc = Nucella caniculata, Nl = Nucella lamellosa, Rp = Roperia poulsoni"
-SurveyWhelkLengthData,Total_Length,Length of the whelk (along longest axis),Varies
+SurveyWhelkLengthData,Total_Length,Length of the whelk (in millimeters along longest axis),Varies
 SurveyWhelkLengthData,Timed_Count_Conducted,Whether a timed count was conducted in the site.,"Yes, No "
 SurveyWhelkLengthData,In_Timed_Count,Whether the whelk was found during the timed count or not,"Yes, No "
 SurveyWhelkLengthData,Remote_ID,"An ID assigned to ""remote"" whelks (i.e., whelks not occurring nearby any of the quadrats that require additional surveying",Varies; whelks only assigned remote values during Spr 22 surveys
@@ -37,13 +37,13 @@ SurveyTransectData,Survey_Date,Date on which the survey data was collected,Varie
 SurveyTransectData,Surveyor,Person conducting the tide height surveys,Varies
 SurveyTransectData,Method,Leveling device used to collect the data,"Laser, Sight"
 SurveyTransectData,Vert_Transect_Number,"Number of the vertical transect along the waterline (essentially the transect ID, not the distance)","1, 2, 3, 4, 5 "
-SurveyTransectData,Vert_Transect_Dist_m,Distance along the horizontal transect that the vertical transect was placed,"Varies, 0-25 in whole meter intervals"
+SurveyTransectData,Vert_Transect_Dist_m,Distance (in meters) along the horizontal transect that the vertical transect was placed,"Varies, 0-25 in whole meter intervals"
 SurveyTransectData,GPS_Lat,Latitude of the top of the transect,"Varies, in decimal degree, WGS84"
 SurveyTransectData,GPS_Long,Longitde of the top of the transect,"Varies, but all should be (-) in decimal degree, WGS84"
-SurveyTransectData,Rod_Height_Waterline,The height of the rod at waterline (if using the sight level). Only given a value if survey rod is reread at the ends of each transect (which means that the laser level was not used and is extremely rare),Varies; must be recorded in meters
-SurveyTransectData,Surveyor_Hgt_m,Height of the surveyor (eye level) or the top of the laser level,Varies; must be recorded in meters
-SurveyTransectData,Laser_to_Waterline_m,Height of the rod when surveyed to the top of the laser level,Varies; must be recorded in meters
-SurveyTransectData,TH_at_Waterline_m,Estimated tide height at the time that the waterline was surveyed. Values pulled from NOAA or MAR (if in Baja) tide projections for the site (or nearby sites),Varies; must be recorded in meters
-SurveyTransectData,TH_Laser_Top,"Tide height of the ""plane"" at the top of the laser level","Varies; must be recorded in meters. Calculated by adding the ""TH_at_Waterline_m"" and ""Laser_to_Waterline_m"" columns. Units must be in m for both columns for this to be correct."
-SurveyTransectData,Rod_Height_Transect_Top,"Height of the stadium rod at the top of the transect. Indicates the drop from the laser level ""plane"" to the top of the rock",Varies; must be recorded in meters
-SurveyTransectData,TH_Transect_Top_m,Tide height of at the top point of the vertical transect ,"Varies; must be recorded in meters. Calculated by subtracting ""Rod_Height_Transect_Top"" from ""TH_Laser_Top"". Units must be in m for both columns for this to be correct."
+SurveyTransectData,Rod_Height_Waterline,The height of the rod (in meters) at waterline (if using the sight level). Only given a value if survey rod is reread at the ends of each transect (which means that the laser level was not used and is extremely rare),Varies; must be recorded in meters
+SurveyTransectData,Surveyor_Hgt_m,Height of the surveyor (in meters at eye level) or the top of the laser level,Varies; must be recorded in meters
+SurveyTransectData,Laser_to_Waterline_m,Height of the rod (in meters) when surveyed to the top of the laser level,Varies; must be recorded in meters
+SurveyTransectData,TH_at_Waterline_m,Estimated tide height (in meters) at the time that the waterline was surveyed. Values pulled from NOAA or MAR (if in Baja) tide projections for the site (or nearby sites),Varies; must be recorded in meters
+SurveyTransectData,TH_Laser_Top,"Tide height (in meters) of the ""plane"" at the top of the laser level","Varies; must be recorded in meters. Calculated by adding the ""TH_at_Waterline_m"" and ""Laser_to_Waterline_m"" columns. Units must be in m for both columns for this to be correct."
+SurveyTransectData,Rod_Height_Transect_Top,"Height of the stadium rod at the top of the transect (in meters). Indicates the drop from the laser level ""plane"" to the top of the rock",Varies; must be recorded in meters
+SurveyTransectData,TH_Transect_Top_m,Tide height of at the top point of the vertical transect  (in meters),"Varies; must be recorded in meters. Calculated by subtracting ""Rod_Height_Transect_Top"" from ""TH_Laser_Top"". Units must be in m for both columns for this to be correct."

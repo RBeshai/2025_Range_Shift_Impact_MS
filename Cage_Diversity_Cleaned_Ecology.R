@@ -1,5 +1,5 @@
-# Created by [name redacted for peer review]
-# Last edited: 01/09/2025
+# Created by Ryan Beshai
+# Last edited: 11/14/2025
 
 
 ## Load Packages ---------------------------------------------------------------
@@ -206,6 +206,12 @@ CMS_AS_Shannon_Summary <-summary(CMS_AsShannon)
 Dana_AS_Shannon_Summary <-summary(Dana_AsShannon)
 Scripps_AS_Shannon_Summary <-summary(Scripps_AsShannon)
 
+# Determine 95% Confidence Intervals
+confint(CM_AsShannon)
+confint(CMS_AsShannon)
+confint(Dana_AsShannon)
+confint(Scripps_AsShannon)
+
 # Clean the workspace 
 rm(CM_AsShannon, CMS_AsShannon, Dana_AsShannon, Scripps_AsShannon)
 
@@ -221,15 +227,7 @@ check_model(Global_AsShannon_lm)
 summary(Global_AsShannon_lm)
   # No overall effect of whelk or region
 
-# Because no significant interaction was found, try a reduced, additive model
-# Build the model
-Global_AsShannon_lm <- lmer(formula = Change_Shannon_As ~ RunAvg_Whelks + Region + (1|Site), data = filter(DiversityAs, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
-  # Model appears to converge when examining optimizer notice on convergence 
-
-# Check model assumptions
-check_model(Global_AsShannon_lm)
-
-# Determine significance
+# Save model for later
 As_Shannon_Global_Summary <- summary(Global_AsShannon_lm)
 
 # Clean the workspace
@@ -258,6 +256,12 @@ CMS_AS_Richness_Summary <-summary(CMS_AsRichness)
 Dana_AS_Richness_Summary <-summary(Dana_AsRichness)
 Scripps_Richness_Summary <-summary(Scripps_AsRichness)
 
+# Determine 95% Confidence Intervals
+confint(CM_AsRichness)
+confint(CMS_AsRichness)
+confint(Dana_AsRichness)
+confint(Scripps_AsRichness)
+
 # Clear the workspace
 rm(CM_AsRichness, CMS_AsRichness, Dana_AsRichness, Scripps_AsRichness)
 
@@ -271,17 +275,7 @@ check_model(Global_AsRich_lm)
 # Determine significance
 summary(Global_AsRich_lm)
 
-# Because no significance interaction was found, try a reduced additive model
-# Define the reduced model
-Global_AsRich_lm <- lmer(formula = Change_Richness_As ~ RunAvg_Whelks + Region + (1|Site), data = filter(DiversityAs, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
-  # Throws a convergence error, but inspection of the output suggests that this is a false error
-  # lmerTest has a lower threshhold for reporting convergence than lme4
-  # Convergence error ignored because the summary output is nearly identical when using different optimizers
-
-# Check model assumptions
-check_model(Global_AsRich_lm)
-
-# Determine significance
+# Save model for later
 As_Richness_Global_Summary <- summary(Global_AsRich_lm)
 
 # Clean the workspace
@@ -310,6 +304,12 @@ CMS_AS_Evenness_Summary <-summary(CMS_AsEvenness)
 Dana_AS_Evenness_Summary <-summary(Dana_AsEvenness)
 Scripps_Evenness_Summary <-summary(Scripps_AsEvenness)
 
+# Determine 95% Confidence Intervals
+confint(CM_AsEvenness)
+confint(CMS_AsEvenness)
+confint(Dana_AsEvenness)
+confint(Scripps_AsEvenness)
+
 # Clean workspace 
 rm(CM_AsEvenness, CMS_AsEvenness, Dana_AsEvenness, Scripps_AsEvenness)
 
@@ -321,16 +321,9 @@ Global_AsEven_lm <- lmer(formula = Change_Evenness_As ~ RunAvg_Whelks * Region +
 check_model(Global_AsEven_lm)
 
 # Determine significance
-summary(Global_AsEven_lm)
+summary(Global_AsEven_lm) 
 
-# Because no significance of whelk effect was found, try a reduced model looking only at the effect of whelks
-# Define reduced model
-Global_AsEven_lm <- lmer(formula = Change_Evenness_As ~ RunAvg_Whelks + Region + (1|Site), data = filter(DiversityAs, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
-
-# Check model assumptions
-check_model(Global_AsEven_lm)
-
-# Determine significance
+# Save model for later
 As_Evenness_Global_Summary <- summary(Global_AsEven_lm)
 
 # Clean the workspace
@@ -362,6 +355,12 @@ Dana_Mex_Shannon_Summary <- summary(Dana_MexShannon)
 Scripps_Mex_Shannon_Summary <- summary(Scripps_MexShannon)
 PM_Mex_Shannon_Summary <- summary(PM_MexShannon)
 CK_Mex_Shannon_Summary <- summary(CK_MexShannon)
+
+# Determine 95% Confidence Intervals
+confint(Dana_MexShannon)
+confint(Scripps_MexShannon)
+confint(PM_MexShannon)
+confint(CK_MexShannon)
 
 # Clean workspace
 rm(CK_MexShannon, PM_MexShannon, Dana_MexShannon, Scripps_MexShannon)
@@ -404,6 +403,12 @@ Scripps_Mex_Richness_Summary <- summary(Scripps_MexRichness)
 PM_Mex_Richness_Summary <- summary(PM_MexRichness)
 CK_Mex_Richness_Summary <- summary(CK_MexRichness)
 
+# Determine 95% Confidence Intervals
+confint(Dana_MexRichness)
+confint(Scripps_MexRichness)
+confint(PM_MexRichness)
+confint(CK_MexRichness)
+
 # Clean the workspace 
 rm(CK_MexRichness, PM_MexRichness, Dana_MexRichness, Scripps_MexRichness)
 
@@ -424,13 +429,13 @@ rm(Global_MexRich_lm)
 
 ##  Mexacanthina --> Evenness (Site Level) -------------------------------------
 # Define the models 
-Dana_MexEvenness <- lm(formula = Change_Evenness_Mex ~ RunAvg_Whelks, data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Dana Point"))
+Dana_MexEvenness <- lm(formula = Change_Evenness_Mex ~ poly(RunAvg_Whelks, 2), data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Dana Point"))
 
-Scripps_MexEvenness <- lm(formula = Change_Evenness_Mex ~ RunAvg_Whelks, data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Scripps"))
+Scripps_MexEvenness <- lm(formula = Change_Evenness_Mex ~ poly(RunAvg_Whelks, 2), data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Scripps"))
 
-PM_MexEvenness <- lm(formula = Change_Evenness_Mex ~ RunAvg_Whelks, data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Punta Morro"))
+PM_MexEvenness <- lm(formula = Change_Evenness_Mex ~ poly(RunAvg_Whelks, 2), data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Punta Morro"))
 
-CK_MexEvenness <- lm(formula = Change_Evenness_Mex ~ RunAvg_Whelks, data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Campo Kennedy"))
+CK_MexEvenness <- lm(formula = Change_Evenness_Mex ~ poly(RunAvg_Whelks, 2), data = filter(DiversityMex, Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Campo Kennedy"))
 
 # Check model assumptions 
 check_model(Dana_MexEvenness)
@@ -443,6 +448,12 @@ Dana_Mex_Evenness_Summary <- summary(Dana_MexEvenness)
 Scripps_Mex_Evenness_Summary <- summary(Scripps_MexEvenness)
 PM_Mex_Evenness_Summary <- summary(PM_MexEvenness)
 CK_Mex_Evenness_Summary <- summary(CK_MexEvenness)
+
+# Determine 95% Confidence Intervals
+confint(Dana_MexEvenness)
+confint(Scripps_MexEvenness)
+confint(PM_MexEvenness)
+confint(CK_MexEvenness)
 
 # Clean the workspace 
 rm(CK_MexEvenness, PM_MexEvenness, Dana_MexEvenness, Scripps_MexEvenness)
@@ -536,7 +547,7 @@ rm(Mex_Shannon_Global_Summary, Mex_Richness_Global_Summary, Mex_Evenness_Global_
 
 
 ################################################################################
-## Abundance-Impact Figures (Not presented in MS) ------------------------------
+## Abundance-Impact Supplemental Figures ---------------------------------------
 ################################################################################
 
 ###########################################
@@ -705,20 +716,20 @@ ScrippsDivAs <- ggarrange(ScrippsShannonPlot_As, ScrippsRichPlot_As, ScrippsEven
 
 
 # Combine all four site-diversity groups into main figure
-AllDiversity_As <- ggarrange(CMDivAs, CMSDivAs, DanaDivAs, ScrippsDivAs, 
+FigureS2 <- ggarrange(CMDivAs, CMSDivAs, DanaDivAs, ScrippsDivAs, 
                              nrow = 4, ncol = 1, align = "v",
                              widths = c(0.8, 1, 1), heights = c(1, 1, 1, 1.2))
 
 
 # Print the final plot
-AllDiversity_As
+FigureS2
 
 # Clear the workspace
 rm(CMShannonPlot_As, CMRichPlot_As, CMEvenPlot_As)
 rm(CMSShannonPlot_As, CMSRichPlot_As, CMSEvenPlot_As)
 rm(DanaShannonPlot_As, DanaRichPlot_As, DanaEvenPlot_As)
 rm(ScrippsShannonPlot_As, ScrippsRichPlot_As, ScrippsEvenPlot_As)
-rm(CMDivAs, CMSDivAs, DanaDivAs, ScrippsDivAs, AllDiversity_As)
+rm(CMDivAs, CMSDivAs, DanaDivAs, ScrippsDivAs, FigureS2)
 
 
 
@@ -882,24 +893,24 @@ CKDivMex <- ggarrange(CKShannonPlot_Mex, CKRichPlot_Mex, CKEvenPlot_Mex,
                       nrow = 1, ncol = 3, align = "h")
 
 # Combine all four site-diversity groups into main figure
-AllDiversity_Mex <- ggarrange(DanaDivMex, ScrippsDivMex, PMDivMex, CKDivMex, 
+FigureS3 <- ggarrange(DanaDivMex, ScrippsDivMex, PMDivMex, CKDivMex, 
                               nrow = 4, ncol = 1, 
                               widths = c(0.8, 1, 1), heights = c(1, 1, 1, 1.2))
 
 # Print the figure
-AllDiversity_Mex
+FigureS3
 
 ## Clear the working space
 rm(DanaShannonPlot_Mex, DanaRichPlot_Mex, DanaEvenPlot_Mex)
 rm(ScrippsShannonPlot_Mex, ScrippsRichPlot_Mex, ScrippsEvenPlot_Mex)
 rm(PMShannonPlot_Mex, PMRichPlot_Mex, PMEvenPlot_Mex)
 rm(CKShannonPlot_Mex, CKRichPlot_Mex, CKEvenPlot_Mex)
-rm(DanaDivMex, ScrippsDivMex, PMDivMex, CKDivMex, AllDiversity_Mex)
+rm(DanaDivMex, ScrippsDivMex, PMDivMex, CKDivMex, FigureS7)
 
 
 
 ################################################################################
-## Diversity Impact Effect Size (Figure 4) -------------------------------------
+## Diversity Impact Effect Size (Figure 5) -------------------------------------
 ################################################################################
 # This will be accomplished in several steps:
 # (1) Redefine all models
@@ -1157,19 +1168,19 @@ AsEvenness_Est <-
 
 
 # Now combine together
-DiversityEstimatesAll <- ggarrange(AsShannon_Est, AsRichness_Est, AsEvenness_Est,
+Figure5 <- ggarrange(AsShannon_Est, AsRichness_Est, AsEvenness_Est,
                                    MexShannon_Est, MexRichness_Est, MexEvenness_Est,
                                    nrow = 2, ncol = 3,
                                    align = "hv")
 
 
 # Print the Figure
-DiversityEstimatesAll
+Figure5
 # When saving, can use ratio of 900 x 450
 
 
 # Remove clutter
 rm(MexShannon_Est, MexRichness_Est, MexEvenness_Est)
 rm(AsShannon_Est, AsRichness_Est, AsEvenness_Est)
-rm(Slopesdf, DiversityEstimatesAll)
+rm(Slopesdf, Figure5)
 

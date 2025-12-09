@@ -11,9 +11,11 @@ ExptCommunityData,Added_Whelk_IDs,The bee tag number assigned to whelks added to
 ExptCommunityData,Deploy_Date,Date the plot was established,"Campo Kennedy = 5/12/2023, Punta Morro = 5/13/2023, Dana Point = 5/24/2023, Scripps = 5/29/2023, Cape Mendocino = 6/21/2023, Cape Mendocino South = 6/22/2023"
 ExptCommunityData,Survey_Date,Date the plot was surveyed ,"Varies, ideally in 2-week intervals between surveys at a site"
 ExptCommunityData,Days_Deployed,Number of days since the deployment date,Varies 
-ExptCommunityData,Days_Deployed,Approx. number of weeks since the deployment date. Adjusted to the nearest 2-week interval. ,"0, 2, 4, 6, 8, (for all northern and southern California sites), and 10, 12 (for Baja sites)"
+ExptCommunityData,Weeks_Deployed,Approx. number of weeks since the deployment date. Adjusted to the nearest 2-week interval. ,"0, 2, 4, 6, 8, (for all northern and southern California sites), and 10, 12 (for Baja sites)"
 ExptCommunityData,Surveyed_By,Initials of the researcher conducting the community survey,Varies
 ExptCommunityData,Recorded_By,Initials of the researcher recording the survey data,Varies 
+ExptCommunityData,Whelk_Eggs,The abundance of each whelk eggs present within the plots. Values given in percent cover. Whelk eggs were observed in only one plot during the experiment. ,"0, 0.5"
+ExptCommunityData,Bare_Space,"The amount of bare space (i.e., exposed rock) present within the plots. Values given in percent cover.",0-100 
 ExptCommunityData,"Species Abundances 
-Columns O-CK)",The abundance of each species present within the plots. Values given in percent cover unless otherwise noted in the column name.,"0-100 for columns in percent cover columns, 0+ (in whole intervals) for count columns"
+(Columns R-CL)",The abundance of each species present within the plots. Values given in percent cover unless otherwise noted in the column name.,"0-100 for columns in percent cover columns, 0+ (in whole intervals) for count columns"
 ExptCommunityData,Notes,Miscellaneous notes,Varies

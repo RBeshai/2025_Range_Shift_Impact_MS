@@ -1,5 +1,5 @@
-# Created by [name redacted for peer review]
-# Last edited: 01/09/2025
+# Created by Ryan Beshai
+# Last edited: 11/14/2025
 
 
 ## Load Packages ---------------------------------------------------------------
@@ -10,6 +10,7 @@ library(lme4)         #for running linear mixed model statistics
 library(lmerTest)     #for determining the statistical significance
 library(performance)  #can use to check model assumptions with check_model()
 library(ggpubr)       #for visualizing qq plots
+library(patchwork)    #for assembling plots
 
 
 
@@ -23,6 +24,14 @@ getwd()
 
 # Even if there's nothing there
 rm(list=ls())
+
+# Define a consistent wrapping theme
+wrap_theme <- theme(text = element_text(size = 11), 
+                    # Adjust figure text size
+                    strip.text = element_text(face = "bold"), strip.background = element_blank(), 
+                    # Remove box around label and bold label text
+                    panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+                    # Add borders all the way around each panel
 
 
 
@@ -175,12 +184,12 @@ CageData$Site <- factor(CageData$Site, levels = c("Mendocino North", "Mendocino 
   # There will be therefore 8 total models, 4x per species 
 
 ###########################################
-# Acanthniucella
+# Acanthinucella
 ########################################### 
 # These focus on impacts over the full 8-week experiment 
 
 # Create the models 
-CM_As_Barn_lm <- lm(formula = Change_Acorn_Barn ~ RunAvg_Whelks, data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Mendocino North"))
+CM_As_Barn_lm <- lm(formula = Change_Acorn_Barn ~ RunAvg_Whelks, data = filter(CageData, Target_Species == "As" & Plot_ID  %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Mendocino North"))
 
 CMS_As_Barn_lm <- lm(formula = Change_Acorn_Barn ~ RunAvg_Whelks, data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8 & Site == "Mendocino South"))
 
@@ -200,72 +209,15 @@ CMS_As_Barn_Summary <- summary(CMS_As_Barn_lm)
 Dana_As_Barn_Summary <- summary(Dana_As_Barn_lm)
 Scripps_As_Barn_Summary <- summary(Scripps_As_Barn_lm)
 
-## Plot Acanthinucella Barnacle Abundance-Impact Relationships (FIGURES NOT IN MS) --------
-# Create 1 plot per site, then combine
+# Determine 95% Confidence Intervals
+confint(CM_As_Barn_lm)
+confint(CMS_As_Barn_lm)
+confint(Dana_As_Barn_lm)
+confint(Scripps_As_Barn_lm)
 
-CMBarn <- 
-  ggplot(data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Mendocino North" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  geom_smooth(color = "black",method = lm, se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = expression(atop(Delta~"Proportion Live Barnacles", paste((Prop.~Live[Current] - Prop.~Live[Initial])))), color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("a."))~"Mendocino North")) +
-  scale_x_continuous(breaks = seq(0, 15 , by = 3), limits = c(-0.05, 15)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.50, by = 0.25), limits = c(-1.05, 0.50)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Cape Mendocino South
-CMSBarn <- 
-  ggplot(data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Mendocino South" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  geom_smooth(color = "black", linetype = "dashed", method = lm, se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = " ", color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("b."))~"Mendocino South")) +
-  scale_x_continuous(breaks = seq(0, 15 , by = 3), limits = c(-0.05, 15)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.50, by = 0.25), limits = c(-1.05, 0.50)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Dana Point
-DanaBarn <- 
-  ggplot(data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Dana Point" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  geom_smooth(color = "black",method = lm, se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = expression(atop(Delta~"Proportion Live Barnacles", paste((Prop.~Live[Current] - Prop.~Live[Initial])))), color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("c."))~"Dana Point")) +
-  scale_x_continuous(breaks = seq(0, 15 , by = 3), limits = c(-0.05, 15)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.50, by = 0.25), limits = c(-1.05, 0.50)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Scripps Reserve
-ScrippsBarn <- 
-  ggplot(data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Scripps" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  geom_smooth(color = "black", linetype = "dashed", method = "lm", se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = " ", color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("d."))~"Scripps")) +
-  scale_x_continuous(breaks = seq(0, 15 , by = 3), limits = c(-0.05, 15)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.50, by = 0.25), limits = c(-1.05, 0.50)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Combine the plots
-As_Barnacle_Predation_Plot <- ggarrange(CMBarn, CMSBarn, DanaBarn, ScrippsBarn, 
-                    nrow = 2, ncol = 2)
-
-
-# Print the Plot 
-As_Barnacle_Predation_Plot
-  # Save as 600 x 550
-
-# Clean the workspace 
-rm(CMBarn, CMSBarn, DanaBarn, ScrippsBarn, As_Barnacle_Predation_Plot)
-
-## End Plotting Acanthinucella Barnacle Abundance-Impact Relationship ----------
 
 # Assess Global Acanthinucella Abundance-Impact Relationship 
-Global_As_Barn_lm <- lmer(formula = Change_Acorn_Barn ~ RunAvg_Whelks * Region + (1|Site/Region), data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
+Global_As_Barn_lm <- lmer(formula = Change_Acorn_Barn ~ RunAvg_Whelks * Region + (1|Site), data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
   # Singular fit due to ~0 variance at the site level 
 
 # Check model assumptions 
@@ -282,7 +234,7 @@ AsBarn_Global_Summary <- summary(Global_As_Barn_lm)
 # Mexacanthina
 ###########################################
 # These focus on impacts at Week 4 (when A-I relationship appeared)
-# No Cage and Partial plots are not included in analysis (unk how many whelks were in the plots)
+# No Cage and Partial plots are not included in analysis (these are the controls)
 # Can test alternate weeks by changing the Weeks_Deployed argument to one of: 2, 4, 6, 8
   
 # Create the Models 
@@ -292,7 +244,7 @@ Scripps_Mex_Barn_lm <- lm(formula = Change_Acorn_Barn ~ RunAvg_Whelks, data = fi
 
 PM_Mex_Barn_lm <- lm(formula = Change_Acorn_Barn ~ RunAvg_Whelks, data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 4 & Site == "Punta Morro"))
 
-CK_Mex_Barn_lm <- lm(formula = Change_Acorn_Barn ~ RunAvg_Whelks, data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 4 & Site == "Campo Kennedy"))
+CK_Mex_Barn_lm <- lm(formula = Change_Acorn_Barn ~ RunAvg_Whelks, data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed ==4 & Site == "Campo Kennedy"))
 
 # Check model assumptions 
 check_model(Dana_Mex_Barn_lm)
@@ -306,74 +258,24 @@ Scripps_Mex_Barn_Summary <- summary(Scripps_Mex_Barn_lm)
 PM_Mex_Barn_Summary <- summary(PM_Mex_Barn_lm)
 CK_Mex_Barn_Summary <- summary(CK_Mex_Barn_lm)
 
-## Plot Mexacanthina Barnacle Abundance-Impact Relationships (FIGURES NOT IN MS) --------
-# Create 1 plot per site, then combine
+# Determine 95% Confidence Intervals 
+confint(Dana_Mex_Barn_lm)
+confint(Scripps_Mex_Barn_lm)
+confint(PM_Mex_Barn_lm)
+confint(CK_Mex_Barn_lm)
 
-# Dana Point 
-DPBarn <- ggplot(data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Dana Point" & Weeks_Deployed == 4), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = expression(atop(Delta~"Proportion Live Barnacles", paste((Prop.~Live[Current] - Prop.~Live[Initial])))), color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("a."))~"Dana Point")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.25, by = 0.25), limits = c(-1.05, 0.25)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Scripps Reserve
-ScrippsBarn <- ggplot(data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Scripps" & Weeks_Deployed == 4), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = " ", color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("b."))~"Scripps")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.25, by = 0.25), limits = c(-1.05, 0.25)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Punta Morro
-PMBarn <- ggplot(data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Punta Morro" & Weeks_Deployed == 4), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  geom_smooth(method = "lm", color = "black", se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = expression(atop(Delta~"Proportion Live Barnacles", paste((Prop.~Live[Current] - Prop.~Live[Initial])))), color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("c."))~"Punta Morro")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.25, by = 0.25), limits = c(-1.05, 0.25)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Campo Kennedy
-CKBarn <- ggplot(data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Site == "Campo Kennedy" & Weeks_Deployed == 4), aes(x = RunAvg_Whelks, y = Change_Acorn_Barn)) +
-  geom_point() +
-  geom_smooth(method = "lm", color = "black", se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = " ", color = "Avg. # Whelks\nin Plot") +
-  ggtitle(expression(bold(paste("d."))~"Campo Kennedy")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-1.0, 0.25, by = 0.25), limits = c(-1.05, 0.25)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Combine Plots
-Mex_Barnacle_Predation_Plot <- ggarrange(DPBarn, ScrippsBarn, PMBarn, CKBarn, 
-                        nrow = 2, ncol = 2)
-
-# Print Plot
-Mex_Barnacle_Predation_Plot
-  #Export as 600 x 550
-
-# Clean the workspace
-rm(DPBarn, ScrippsBarn, PMBarn, CKBarn, Mex_Barnacle_Predation_Plot)
-
-## End Plotting Mexacanthina Barnacle Abundance-Impact Relationship ------------
 
 ## Assess Global Mexacanthina Abundance-Impact Relationship 
 
 # Define the model (for week 4, as above)
-GlobalBarn_lm <- lmer(formula = Change_Acorn_Barn ~ RunAvg_Whelks * Region + (1|Site/Region), data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 4))
+GlobalBarn_lm <- lmer(formula = Change_Acorn_Barn ~ RunAvg_Whelks * Region + (1|Site), data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 4))
 
 # Check assumptions 
 check_model(GlobalBarn_lm)
 
 # Determine Significance
 MexBarn_Global_Summary <- summary(GlobalBarn_lm)
+
 
 ###############################################
 # MODEL OUTPUTS (Run these to see significance)
@@ -438,75 +340,16 @@ Dana_Mex_Mussel_Summary <- summary(Dana_Mex_Mussel_lm)
 Scripps_Mex_Mussel_Summary <- summary(Scripps_Mex_Mussel_lm)
 CK_Mex_Mussel_Summary <- summary(CK_Mex_Mussel_lm)
 
-## Plot Mexacanthina Abundance-Impact Relationships (FIGURES NOT IN MS) --------
-# Create 1 plot per site, then combine
+# Determine 95% Confidence Intervals
+confint(Dana_Mex_Mussel_lm)
+confint(Scripps_Mex_Mussel_lm)
+confint(CK_Mex_Mussel_lm)
 
-# Dana Point
-DanaMussel <- ggplot(data = filter(CageData, Target_Density !="NA" & Target_Species == "M" & Site == "Dana Point" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Total_Mussels_Drilled)) +
-  geom_point() +
-  scale_color_viridis(option = "G", end = 0.75, direction = -1, discrete = F) +
-  geom_smooth(color = "black", method = "lm", se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))),
-       y = expression(atop("Total"~italic(Mytilus)~"spp. Lost","(# ind. eaten)"))) +
-  ggtitle(expression(bold(paste("a."))~"Dana Point")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-35, 0, by = 5), limits = c(-35, 0.05)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-    
-# Scripps Reserve
-ScrippsMussel <- ggplot(data = filter(CageData, Target_Density !="NA" & Target_Species == "M" & Site == "Scripps" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Total_Mussels_Drilled)) +
-  scale_color_viridis(option = "G", end = 0.75, direction = -1, discrete = F) +
-  geom_smooth(color = "black", method = "lm", se = F) +
-    geom_point() +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), y = "") +
-  ggtitle(expression(bold(paste("b."))~"Scripps")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-35, 0, by = 5), limits = c(-35, 0.05)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Punta Morro (no plot, as very few mussels in plots)
-PMMussel <- ggplot(data = filter(CageData, Target_Density !="NA" & Target_Species == "M" & Site == "Punta Morro" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Total_Mussels_Drilled)) +
-  geom_point() +
-  scale_color_viridis(option = "G", end = 0.75, direction = -1, discrete = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), 
-       y = expression(atop("Total"~italic(Mytilus)~"spp. Lost","(# ind. eaten)"))) +
-  ggtitle(expression(bold(paste("c."))~"Punta Morro")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-35, 0, by = 5), limits = c(-35, 0.05)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Campo Kennedy
-CKMussel <- ggplot(data = filter(CageData, Target_Density !="NA" & Target_Species == "M" & Site == "Campo Kennedy" & Weeks_Deployed == 8), aes(x = RunAvg_Whelks, y = Total_Mussels_Drilled)) +
-  geom_point() +
-  scale_color_viridis(option = "G", end = 0.75, direction = -1, discrete = F) +
-  geom_smooth(color = "black", linetype = "dashed", method = "lm", se = F) +
-  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))), 
-       y = " ") +
-  ggtitle(expression(bold(paste("d."))~"Campo Kennedy")) +
-  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
-  scale_y_continuous(breaks = seq(-35, 0, by = 5), limits = c(-35, 0.05)) +
-  theme_classic(base_size = 12) +
-  theme(plot.title = element_text(hjust = 0.5))
-
-# Combine the plots
-Mex_Mussel_Predation_Plot <- ggarrange(DanaMussel, ScrippsMussel, PMMussel, CKMussel, 
-                        nrow = 2, ncol = 2)
-
-# Print the new plot 
-Mex_Mussel_Predation_Plot
-
-# Clean the workspace 
-rm(DanaMussel, ScrippsMussel, PMMussel, CKMussel, Mex_Mussel_Predation_Plot)
-
-## End Plotting Mexacanthina Mussel Abundance-Impact Relationship --------------
 
 ## Assess Global Mexacanthina Abundance-Impact Relationship -------------------- 
 
 # First model looks for an abundance * region interaction 
-Mex_Mussel_Global <- lmer(formula = Total_Mussels_Drilled ~ RunAvg_Whelks * Region + (1|Site/Region), data = filter(CageData, Region %in% c("SoCal", "Baja") & Site != "Punta Morro" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
+Mex_Mussel_Global <- lmer(formula = Total_Mussels_Drilled ~ RunAvg_Whelks * Region + (1|Site), data = filter(CageData, Region %in% c("SoCal", "Baja") & Site != "Punta Morro" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
     # Mussels never attacked in PM, so not included in the global model
     # Gives a singularity warning, but this is due to 0 variance in the random effect
     # Will leave in the model, as this does not affect coefficients
@@ -517,20 +360,8 @@ check_model(Mex_Mussel_Global)
 # Determine significance 
 summary(Mex_Mussel_Global)
 
-
 # Clean the console
 rm(MusselAVI_Global)
-
-# Second model verifies overall effect of Mexacanthina on mussels
-Mex_Mussel_Global2 <- lmer(formula = Total_Mussels_Drilled ~ RunAvg_Whelks + (1|Site), data = filter(CageData, Region %in% c("SoCal", "Baja") & Site != "Punta Morro" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8))
-  # Need to drop the region effect here, as model would not converge (only 1 Mexico site)
-
-# Check model assumptions 
-check_model(Mex_Mussel_Global2)
-
-# Determine significance 
-summary(Mex_Mussel_Global2)
-  # Significant overall effect of whelks on mussels 
 
 ###############################################
 # MODEL OUTPUTS (Run these to see significance)
@@ -542,8 +373,7 @@ Scripps_Mex_Mussel_Summary
 CK_Mex_Mussel_Summary 
 
 # Global Mexacanthina Impact on Mussels 
-Mex_Mussel_Global
-Mex_Mussel_Global2
+summary(Mex_Mussel_Global)
 
 ###
 
@@ -553,9 +383,125 @@ rm(Dana_Mex_Mussel_Summary, Scripps_Mex_Mussel_Summary, CK_Mex_Mussel_Summary)
 rm(Mex_Mussel_Global, Mex_Mussel_Global2)
 
 
+################################################################################
+## Plot Whelk Abundance-Impact Relationships (Figure 3) ------------------------
+################################################################################
+
+## Edit the data for plotting purposes
+CageData <- CageData %>% 
+  mutate(As_Status = case_when(Site == "Mendocino North" ~ "Expanded",
+                               Site == "Mendocino South" ~ "Expanded",
+                               Site == "Dana Point" & Target_Species == "As" ~ "Historical",
+                               Site == "Scripps" & Target_Species == "As" ~ "Historical"),
+         Mex_Status = case_when(Site == "Dana Point" & Target_Species == "M" ~ "Expanded",
+                                Site == "Scripps" & Target_Species == "M" ~ "Expanded",
+                                Site == "Campo Kennedy" ~ "Historical",
+                                Site == "Punta Morro" ~ "Historical",
+         ))
+
+# Determine the factor orders 
+CageData$Site <- factor(CageData$Site, levels = c("Mendocino North", "Mendocino South", "Dana Point", "Scripps", 
+                                                  "Punta Morro", "Campo Kennedy"))
+
+CageData$As_Status <- factor(CageData$As_Status, levels = c("Historical", "Expanded"))
+
+CageData$Mex_Status <- factor(CageData$Mex_Status, levels = c("Historical", "Expanded"))
+
+# Define the shapes so they are consistent across plots
+SiteShapes <- c("Mendocino North" = 15, "Mendocino South" = 16, "Dana Point" = 17,
+                "Scripps" = 18, "Punta Morro" = 8, "Campo Kennedy" = 25)
+
+p1 <- 
+  ggplot(data = filter(CageData, Target_Species == "As" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), 
+         aes(x = RunAvg_Whelks, y = Change_Acorn_Barn, shape = Site, color = As_Status)) +
+  geom_smooth(data = filter(CageData, Target_Species == "As" & Site == "Mendocino North" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), method = lm, se = F) +
+  geom_smooth(data = filter(CageData, Target_Species == "As" & Site == "Mendocino South" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), 
+              linetype = "dashed", method = lm, se = F) +
+  geom_smooth(data = filter(CageData, Target_Species == "As" & Site == "Dana Point" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), method = lm, se = F) +
+  geom_smooth(data = filter(CageData, Target_Species == "As" & Site == "Scripps" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), 
+              linetype = "dashed", method = lm, se = F) +
+  geom_point(size = 2) +
+  labs(x = " ",
+       y = expression(atop(Delta~"Proportion Live Barnacles", paste((Prop.~Live[Current] - Prop.~Live[Initial])))), 
+       title = expression("a.")) +
+  #guides(shape = guide_legend(label.position = "left")) +
+  scale_shape_manual(values = SiteShapes) + 
+  scale_color_manual(breaks = c("Historical", "Expanded"), values = c("black", "lightgrey"), guide = "none") +
+  scale_x_continuous(breaks = seq(0, 15 , by = 3), limits = c(-0.05, 15)) +
+  scale_y_continuous(breaks = seq(-1.0, 0.50, by = 0.25), limits = c(-1.05, 0.50)) +
+  facet_wrap(~As_Status) + 
+  theme_classic(base_size = 11) +
+  wrap_theme +
+  theme(legend.title = element_blank())
+
+p2 <- 
+  ggplot(data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 4), 
+         aes(x = RunAvg_Whelks, y = Change_Acorn_Barn, shape = Site, color = Mex_Status)) +
+  geom_smooth(data = filter(CageData, Target_Species == "M" & Site == "Punta Morro" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 4), method = lm, se = F) +
+  geom_smooth(data = filter(CageData, Target_Species == "M" & Site == "Campo Kennedy" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 4), method = lm, se = F) +
+  geom_point(size = 2) +
+  labs(x = " ",
+       y = expression(atop(Delta~"Proportion Live Barnacles", paste((Prop.~Live[Current] - Prop.~Live[Initial])))),
+       title = expression("b.")) +
+  #guides(shape = guide_legend(label.position = "left")) +
+  scale_shape_manual(values = SiteShapes) + 
+  scale_color_manual(breaks = c("Historical", "Expanded"), values = c("black", "lightgrey"), guide = "none") +
+  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
+  scale_y_continuous(breaks = seq(-1.0, 0.50, by = 0.25), limits = c(-1.05, 0.50)) +
+  facet_wrap(~Mex_Status) + 
+  theme_classic(base_size = 11) +
+  wrap_theme +
+  theme(legend.title = element_blank())
+
+p3 <- 
+  ggplot(data = filter(CageData, Target_Species == "M" & Plot_ID %!in% c("No Cage", "Partial") 
+                       & Site != "Punta Morro" & Weeks_Deployed == 8), 
+         aes(x = RunAvg_Whelks, y = Total_Mussels_Drilled, shape = Site, color = Mex_Status)) +
+  geom_smooth(data = filter(CageData, Target_Species == "M" & Site == "Dana Point" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), method = lm, se = F) +
+  geom_smooth(data = filter(CageData, Target_Species == "M" & Site == "Scripps" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), 
+              color = "lightgrey", method = lm, se = F) +
+  geom_smooth(data = filter(CageData, Target_Species == "M" & Site == "Campo Kennedy" 
+                            & Plot_ID %!in% c("No Cage", "Partial") & Weeks_Deployed == 8), 
+              linetype = "dashed", method = lm, se = F) +
+  geom_point(size = 2) +
+  labs(x = expression(atop("Whelk Density", ("Avg. # Whelks × Plot"^-1))),
+       y = expression(atop("Total"~italic(Mytilus)~"spp. Lost","(# ind. eaten)")),
+       title = expression("c.")) +
+  #guides(shape = guide_legend(label.position = "left")) +
+  scale_shape_manual(values = SiteShapes) + 
+  scale_color_manual(breaks = c("Historical", "Expanded"), values = c("black", "lightgrey"), guide = "none") +
+  scale_x_continuous(breaks = seq(0, 24, by = 6), limits = c(-0.05, 24)) +
+  scale_y_continuous(breaks = seq(-35, 0, by = 5), limits = c(-35, 0.05)) +
+  facet_wrap(~Mex_Status) + 
+  theme_classic(base_size = 11) +
+  wrap_theme +
+  theme(legend.title = element_blank())
+
+
+# Combine the plots
+Figure3 <- (p1 / p2 / p3) 
+
+# Print the figure
+Figure3
+
+# Clean the workspace 
+rm(p1, p2, p3, Figure3)
+
+## End Plotting Acanthinucella Barnacle Abundance-Impact Relationship ----------
+
+
+
 
 ################################################################################
-## Prey Impact Effect Size (Figure 3) ------------------------------------------
+## Prey Impact Effect Size (Figure 4) ------------------------------------------
 ################################################################################
 # This will be accomplished in several steps:
   # (1) Redefine all models
@@ -725,14 +671,14 @@ MexMussels_Est <- ggplot(data = filter(Slopesdf, Species == "M" & Prey == "Musse
         axis.title.y = element_blank())
 
 # Now combine together
-Fig3 <- ggarrange(AsAcorns_Est, NULL, MexAcorns_Est, MexMussels_Est, 
+Figure4 <- ggarrange(AsAcorns_Est, NULL, MexAcorns_Est, MexMussels_Est, 
                           widths = c(0.90, 0.90, 1, 1),
                           ncol = 2, nrow = 2, 
                           common.legend = T, legend = "top",
                           align = "hv")
 
 # Print the figure 
-Fig3
+Figure4
 
 
 # Clean workspace
@@ -747,7 +693,7 @@ rm(AsAcorns_Est, MexAcorns_Est, MexMussels_Est, Estimatesall)
 ## Supplemental Figures --------------------------------------------------------
 ################################################################################
 
-# The Abundance of Prey in Cages at Deployment (Supplementary Figure 5)
+# The Abundance of Prey in Cages at Deployment (Figure S7)
 
 ## Manipulate Data
 MexPreyDF <- filter(CageData, Weeks_Deployed == 0 & Target_Species == "M") %>% 
@@ -794,15 +740,15 @@ MexPreyPlot <- ggplot(data = MexPreyDF, aes(x = Plot_ID, y = PctCover)) +
   theme(axis.text.x = element_text(vjust = -0.001, angle = 90))
 
 # Combine the Plots
-Fig.S5 <- ggarrange(AsPreyPlot, MexPreyPlot,
+FigureS7 <- ggarrange(AsPreyPlot, MexPreyPlot,
                          common.legend = TRUE,
                          legend = "bottom", 
                          nrow = 1, ncol = 2)
 
 # Print the plots
-Fig.S5
+FigureS7
   # Export as 750 x 450
 
 # Clean the workspace
-rm(MexPreyDF, AsPreyDF, MexPreyPlot, AsPreyPlot)
+rm(FigureS7, MexPreyDF, AsPreyDF, MexPreyPlot, AsPreyPlot)
 
