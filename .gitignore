@@ -1,4 +1,8 @@
+# R files
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+
+# Folders
+Irssa_AvI_DataPull
